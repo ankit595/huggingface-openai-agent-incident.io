@@ -12,7 +12,7 @@ Also known as: Hugging Face agent intrusion, OpenAI–Hugging Face evaluation in
 
 After GitHub Pages is on, the site root **is** the demo:
 
-`https://<your-username>.github.io/<repo-name>/`
+`https://ankit595.github.io/huggingface-openai-agent-incident.io/`
 
 Until then, run it locally (below) or open [`index.html`](./index.html) from this folder via a local server.
 
