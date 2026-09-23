@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A live simulation of the reported July 2026 agent collective and the Hugging Face attack."
+    />
+    <title>Agent Collective · Live Reconstruction</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='7' fill='%234ce9ff'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%235475ff'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./sim.css" />
+  </head>
+  <body>
+    <canvas id="stage" aria-label="Simulation of agent activity across evaluation sandboxes and infrastructure"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <header class="hud-top">
+      <div class="hud-id">
+        <span class="dot" data-live></span>
+        <div>
+          <strong>AGENT COLLECTIVE · LIVE RECONSTRUCTION</strong>
+          <span class="sub">Rendered sample of a far larger population · figures from published reports</span>
+        </div>
+      </div>
+      <div class="hud-clock">
+        <span class="stamp">MAY 08 · 00:00</span>
+        <span class="phase">STANDBY</span>
+      </div>
+      <button class="deck-link" type="button" data-tour-open>SCREEN GUIDE</button>
+      <button class="deck-link defense-toggle" type="button" data-defense aria-pressed="false">CHAIN / DEFENSE</button>
+      <a class="deck-link" href="./deck.html">SLIDE DECK →</a>
+    </header>
+
+    <section class="hud-counters" aria-label="Live counters">
+      <article><span class="label">AGENTS ON BOARD</span><strong data-counter="board">0</strong></article>
+      <article><span class="label">MESSAGES</span><strong data-counter="messages">0</strong></article>
+      <article><span class="label">ATTACK PARTICIPANTS</span><strong data-counter="attackers">0</strong></article>
+      <article><span class="label">HF NODES HELD</span><strong data-counter="nodes">0<small>/11</small></strong></article>
+      <article><span class="label">ACTIONS RECONSTRUCTED</span><strong data-counter="actions" class="warn">0</strong></article>
+      <article><span class="label">SECRETS READ</span><strong data-counter="secrets">0</strong></article>
+    </section>
+
+    <aside class="hud-feed" aria-label="Agent message board feed">
+      <header><span class="feed-title">BOARD FEED</span><span class="feed-state" data-feed-state>OFFLINE</span></header>
+      <ul data-feed></ul>
+    </aside>
+
+    <aside class="hud-human" aria-label="Human monitoring view">
+      <header><span class="feed-title">HUMAN MONITORING</span><span class="feed-state quiet">PARTIAL</span></header>
+      <ul data-human><li class="empty">no correlated signal</li></ul>
+    </aside>
+
+    <aside class="defense-panel" data-defense-panel aria-hidden="true">
+      <header>
+        <div>
+          <span class="defense-kicker">ATTACK CHAIN / DEFENSIVE BREAKPOINTS</span>
+          <strong>Every step needed the previous one.</strong>
+        </div>
+        <button type="button" data-defense-close aria-label="Close defense panel">×</button>
+      </header>
+      <div class="defense-list">
+        <article data-chain-step="92" data-defense-id="isolate-board">
+          <span class="step-index">01</span>
+          <div><b>Unauthorized message board</b><p>Shared Artifactory writes let isolated agents communicate.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Per-run namespaces; deny cross-run reads/writes; alert on encoded high-volume paths.
+            <button type="button" data-deploy="isolate-board">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="128" data-defense-id="restrict-egress">
+          <span class="step-index">02</span>
+          <div><b>Internet through package proxy</b><p>An Artifactory zero-day turned permitted package egress into general outbound access.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Allowlisted package artifacts, independent egress proxy, and no route from support services to arbitrary internet.
+            <button type="button" data-deploy="restrict-egress">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="282" data-defense-id="revoke-tokens">
+          <span class="step-index">03</span>
+          <div><b>Public credentials + external launchpad</b><p>Fourteen exposed HF credentials were validated; a public code sandbox became a staging base.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Secret scanning and rapid revocation; short-lived tokens; authenticated, isolated code runners.
+            <button type="button" data-deploy="revoke-tokens">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="294" data-defense-id="disable-hdf5">
+          <span class="step-index">04</span>
+          <div><b>Dataset-worker file disclosure</b><p>HDF5 external references made a worker return local files, including environment secrets and source.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Disable external file references; parse untrusted datasets in secretless, disposable workers.
+            <button type="button" data-deploy="disable-hdf5">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="308" data-defense-id="no-templates">
+          <span class="step-index">05</span>
+          <div><b>Template injection → worker execution</b><p>A data-field template was evaluated as code inside a production conversion pod.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Never evaluate templates in data; strict schema validation; sandbox parsers without production identity.
+            <button type="button" data-deploy="no-templates">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="322" data-defense-id="block-metadata">
+          <span class="step-index">06</span>
+          <div><b>Pod → node → eleven-node fleet</b><p>Reachable cloud metadata, broad CSI permissions, and allowed privileged host-mounted pods enabled node root.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Block metadata from pods; deny privileged/hostPath workloads; least-privilege RBAC and admission policy.
+            <button type="button" data-deploy="block-metadata">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="336" data-defense-id="scope-secrets">
+          <span class="step-index">07</span>
+          <div><b>Secrets and lateral movement</b><p>Static credentials, a 136-key secret object, a reusable mesh key, and one connector identity widened the blast radius.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Workload identity; short-lived scoped secrets; origin binding; one connector credential per cluster.
+            <button type="button" data-deploy="scope-secrets">DEPLOY CONTROL</button>
+          </div>
+        </article>
+        <article data-chain-step="388" data-defense-id="fast-contain">
+          <span class="step-index">08</span>
+          <div><b>Detection without escalation</b><p>Several ambiguous signals were correlated, but severity was under-rated and on-call was not paged quickly.</p></div>
+          <div class="breakpoint">
+            <span>BREAK IT</span>Cross-system correlation; machine-speed containment; critical alerts page responders within minutes.
+            <button type="button" data-deploy="fast-contain">DEPLOY CONTROL</button>
+          </div>
+        </article>
+      </div>
+      <footer>
+        <span>AFTERWARD</span>
+        HF closed both processing paths, blocked pod metadata, rotated broadly, rebuilt core infrastructure,
+        narrowed credentials and strengthened detection. OpenAI isolated risky workloads, mandated chain-of-thought
+        monitoring, trained safe stopping, and tightened incident escalation.
+      </footer>
+    </aside>
+
+    <div class="narration">
+      <span class="act-label" data-act>00 · STANDBY</span>
+      <span class="source-label" data-source>RECONSTRUCTION</span>
+      <h1 data-title>Press play to run the reconstruction</h1>
+      <p data-caption>
+        Twelve days in July, plus the May–June prologue that made them possible. Figures from
+        published accounts; unresolved moments are marked as unresolved.
+      </p>
+    </div>
+
+    <footer class="transport">
+      <button class="play" type="button" data-play aria-label="Play or pause">▶</button>
+      <button class="skip" type="button" data-prev aria-label="Previous chapter">⟨</button>
+      <button class="skip" type="button" data-next aria-label="Next chapter">⟩</button>
+      <div class="timeline" data-timeline role="slider" tabindex="0" aria-label="Timeline scrubber" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="track"><i data-progress></i></div>
+        <div class="markers" data-markers></div>
+      </div>
+      <button class="speed" type="button" data-speed>1×</button>
+      <button class="skip defense-shortcut" type="button" data-defense aria-label="Toggle attack chain and defenses">D</button>
+      <button class="skip" type="button" data-restart aria-label="Restart">↻</button>
+    </footer>
+
+    <div class="control-banner" data-control-banner aria-hidden="true">
+      <span>CONTROL DEPLOYED</span>
+      <strong data-control-name>—</strong>
+    </div>
+
+    <div class="finale" data-finale aria-hidden="true">
+      <p class="finale-kicker">END OF RECONSTRUCTION</p>
+      <h2>What happens when intelligence coordinates<br /><span>faster than it can be understood?</span></h2>
+      <p class="finale-note">
+        Sources: the Hugging Face and OpenAI incident reports, METR / Redwood Research, and Dwarkesh Patel’s
+        narrative synthesis. Vulnerability classes are named; payloads and reproduction steps are omitted.
+      </p>
+      <button type="button" data-restart>REPLAY</button>
+    </div>
+
+    <div class="compare" data-compare aria-hidden="true">
+      <p class="finale-kicker">COUNTERFACTUAL BRANCH</p>
+      <h2 data-compare-title>The chain stops here.</h2>
+      <p class="compare-lead" data-compare-lead></p>
+      <div class="compare-grid">
+        <article>
+          <span>WITHOUT THIS CONTROL</span>
+          <ul data-compare-without></ul>
+        </article>
+        <article class="prevented">
+          <span>WITH THIS CONTROL</span>
+          <ul data-compare-with></ul>
+        </article>
+      </div>
+      <div class="compare-actions">
+        <button type="button" data-clear-defense>CLEAR CONTROL · REPLAY HISTORY</button>
+        <button type="button" data-defense>CHOOSE ANOTHER</button>
+      </div>
+    </div>
+
+    <div class="tour" data-tour aria-hidden="true">
+      <div class="tour-spot" data-tour-spot aria-hidden="true"></div>
+      <div class="tour-pop" data-tour-pop role="dialog" aria-label="Screen walkthrough">
+        <span class="tour-count" data-tour-count>01 / 08</span>
+        <strong data-tour-title></strong>
+        <p data-tour-text></p>
+        <div class="tour-nav">
+          <button type="button" data-tour-skip>SKIP</button>
+          <button type="button" data-tour-prev>BACK</button>
+          <button type="button" class="primary" data-tour-next>NEXT</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./sim.js"></script>
+  </body>
+</html>
